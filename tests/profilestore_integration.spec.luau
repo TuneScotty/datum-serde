@@ -374,7 +374,7 @@ local function testProfileStoreSessionWithDatumSerde()
 	local okTemplate, errTemplate = PlayerV3.validate(template, "/template")
 	assert(okTemplate, "Template should be valid V3: " .. tostring(errTemplate))
 	print(profile.Data)
-	
+
 	-- Validate initial profile data
 	local okInitial, errInitial = PlayerV3.validate(profile.Data, "/initial")
 	assert(okInitial, "Initial profile.Data should be valid V3: " .. tostring(errInitial))
