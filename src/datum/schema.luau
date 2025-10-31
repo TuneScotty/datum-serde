@@ -373,7 +373,7 @@ function Schema.optional<T>(schema: Schema<T>): Schema<T?>
 			end
 			return schema.encode(value)
 		end,
-		decode = function(value: any, path: string): (boolean, (T | nil) | string)
+		decode = function(value: any, path: string): (boolean, T | nil | string)
 			if value == nil then
 				return true, nil
 			end

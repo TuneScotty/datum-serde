@@ -178,12 +178,10 @@ local function testComplexNesting()
 		level = Schema.number(),
 		quests = Schema.array(questSchema),
 		stats = Schema.map(Schema.string(), Schema.number()),
-		guild = Schema.optional(
-			Schema.object({
-				name = Schema.string(),
-				role = Schema.string(),
-			})
-		),
+		guild = Schema.optional(Schema.object({
+			name = Schema.string(),
+			role = Schema.string(),
+		})),
 	})
 
 	local complexData = {
@@ -251,14 +249,15 @@ local function testMultiStepMigration()
 	end)
 
 	plan:add("2", "3", function(v)
-		return true, {
-			version = "3",
-			currency = {
-				gold = v.gold,
-				silver = v.silver,
-				copper = 0,
-			},
-		}
+		return true,
+			{
+				version = "3",
+				currency = {
+					gold = v.gold,
+					silver = v.silver,
+					copper = 0,
+				},
+			}
 	end)
 
 	-- Start with V1

@@ -32,12 +32,10 @@ local PlayerV2 = Schema.object({
 	version = Schema.literal("2"),
 	coins = Schema.number(),
 	gems = Schema.number(),
-	items = Schema.array(
-		Schema.object({
-			id = Schema.string(),
-			count = Schema.number(),
-		})
-	),
+	items = Schema.array(Schema.object({
+		id = Schema.string(),
+		count = Schema.number(),
+	})),
 })
 
 local PlayerV3 = Schema.object({
@@ -46,12 +44,10 @@ local PlayerV3 = Schema.object({
 		coins = Schema.number(),
 		gems = Schema.number(),
 	}),
-	items = Schema.array(
-		Schema.object({
-			id = Schema.string(),
-			count = Schema.number(),
-		})
-	),
+	items = Schema.array(Schema.object({
+		id = Schema.string(),
+		count = Schema.number(),
+	})),
 	level = Schema.number(),
 })
 
@@ -81,15 +77,16 @@ migrationPlan:add("2", "3", function(v2)
 		return false, "invalid v2"
 	end
 
-	return true, {
-		version = "3",
-		currency = {
-			coins = v2.coins,
-			gems = v2.gems,
-		},
-		items = v2.items,
-		level = 1,
-	}
+	return true,
+		{
+			version = "3",
+			currency = {
+				coins = v2.coins,
+				gems = v2.gems,
+			},
+			items = v2.items,
+			level = 1,
+		}
 end)
 
 migrationPlan:lock()
