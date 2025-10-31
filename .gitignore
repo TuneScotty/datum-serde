@@ -1,0 +1,35 @@
+# Roblox Studio
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+
+# Rojo
+*.project.json.lock
+
+# Wally
+Packages/
+wally.lock
+
+# DevPackages (local development)
+DevPackages/
+
+# Test outputs
+test_results/
+coverage/
+*.luau.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.log

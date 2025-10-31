@@ -1,0 +1,13 @@
+[package]
+name = "x6ski/datum-serde"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+description = "Type-safe data serialization, migration, and versioning for Roblox"
+license = "MIT"
+authors = ["x6ski"]
+
+[dependencies]
+
+[dev-dependencies]
+ProfileStore = "lm-loleris/profilestore@1.0.3"

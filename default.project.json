@@ -1,0 +1,45 @@
+{
+  "name": "datum-serde",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Packages": {
+        "$className": "Folder",
+        "DatumSerde": {
+          "$path": "src/datum"
+        },
+        "DevPackages": {
+          "$path": "DevPackages"
+        }
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "RunTests": {
+        "$path": "tests/studio_test_runner.server.luau"
+      },
+      "DatumSerdeTestRunner": {
+        "$className": "Folder",
+        "runner": {
+          "$path": "tests/runner.luau"
+        },
+        "schema_spec": {
+          "$path": "tests/schema.spec.luau"
+        },
+        "codec_spec": {
+          "$path": "tests/codec.spec.luau"
+        },
+        "migrate_spec": {
+          "$path": "tests/migrate.spec.luau"
+        },
+        "integration_spec": {
+          "$path": "tests/integration.spec.luau"
+        },
+        "profilestore_integration_spec": {
+          "$path": "tests/profilestore_integration.spec.luau"
+        }
+      }
+    }
+  }
+}
