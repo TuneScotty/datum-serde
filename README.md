@@ -1,6 +1,10 @@
-# datum-serde
+<p align="center">
+  <img src="public/misc/DatumSerde.png" alt="DatumSerde Logo" style="width:300px; height:auto;">
+</p>
 
-![DatumSerde Logo](public/misc/DatumSerde.png)
+
+
+# datum-serde
 
 Type-safe data serialization, migration, and versioning for Roblox.
 
