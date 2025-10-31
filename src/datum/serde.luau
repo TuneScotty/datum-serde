@@ -6,7 +6,7 @@ Arguments: None (module exports encode/decode functions)
 Time complexity: O(n) where n = data structure size
 ]]
 
-local Schema = require("./schema")
+local Schema = require(script.Parent.schema)
 
 export type Schema<T> = Schema.Schema<T>
 export type Codec = {

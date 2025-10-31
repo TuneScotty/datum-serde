@@ -9,9 +9,9 @@ Time complexity: O(n*m) where n = iterations, m = data size
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatumSerde = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("DatumSerde")
 
-local Schema = require(DatumSerde.schema)
-local Serde = require(DatumSerde.serde)
-local JSON = require(DatumSerde.codec.json)
+local Schema = require(DatumSerde:WaitForChild("schema"))
+local Serde = require(DatumSerde:WaitForChild("serde"))
+local JSON = require(DatumSerde:WaitForChild("codec"):WaitForChild("json"))
 
 local ITERATIONS = 10000
 local TARGET_ENCODE_MS = 2.0

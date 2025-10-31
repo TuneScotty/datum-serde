@@ -27,14 +27,14 @@ Arguments: None
 Time complexity: O(1)
 ]]
 function Migrate.plan(): MigrationPlan
-	local self: MigrationPlan = {
+	local plan: MigrationPlan = {
 		graph = {},
 		locked = false,
 		add = nil :: any,
 		lock = nil :: any,
 	}
 
-	function self:add(fromVer: string, toVer: string, fn: MigrationFn)
+	function plan:add(fromVer: string, toVer: string, fn: MigrationFn)
 		if self.locked then
 			error("E:Migration: plan is locked")
 		end
@@ -50,11 +50,11 @@ function Migrate.plan(): MigrationPlan
 		self.graph[fromVer].edges[toVer] = fn
 	end
 
-	function self:lock()
+	function plan:lock()
 		self.locked = true
 	end
 
-	return self
+	return plan
 end
 
 --[[

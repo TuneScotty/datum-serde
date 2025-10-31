@@ -9,9 +9,6 @@ Time complexity: O(sum of all tests)
 -- Wait for services to load
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Adjust these paths to match your Rojo sync configuration
-local DatumSerde = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("DatumSerde")
-
 -- Import test modules from ServerScriptService
 local testFolder = script.Parent:FindFirstChild("DatumSerdeTestRunner")
 if not testFolder then
@@ -23,9 +20,6 @@ local codecTests = require(testFolder:WaitForChild("codec_spec"))
 local migrateTests = require(testFolder:WaitForChild("migrate_spec"))
 local integrationTests = require(testFolder:WaitForChild("integration_spec"))
 local profileStoreIntegrationTests = require(testFolder:WaitForChild("profilestore_integration_spec"))
-
--- Import benchmark
-local benchmark = require(script.Parent:WaitForChild("Benchmark"))
 
 print("\n" .. string.rep("=", 60))
 print("DATUM-SERDE TEST SUITE")
@@ -58,7 +52,6 @@ runSuite("ProfileStore Integration Tests", profileStoreIntegrationTests)
 print("\n" .. string.rep("-", 60))
 print("Running: Performance Benchmark")
 print(string.rep("-", 60))
-local benchmarkResults = benchmark
 print("\n✅ BENCHMARK COMPLETE")
 
 print("\n" .. string.rep("=", 60))
