@@ -67,7 +67,13 @@ local encodeAvgMs = encodeTotalMs / ITERATIONS
 
 print(string.format("  Total: %.2f ms", encodeTotalMs))
 print(string.format("  Average: %.4f ms", encodeAvgMs))
-print(string.format("  Target: %.2f ms - %s", TARGET_ENCODE_MS, encodeAvgMs < TARGET_ENCODE_MS and "✓ PASS" or "✗ FAIL"))
+print(
+	string.format(
+		"  Target: %.2f ms - %s",
+		TARGET_ENCODE_MS,
+		encodeAvgMs < TARGET_ENCODE_MS and "✓ PASS" or "✗ FAIL"
+	)
+)
 
 -- Benchmark decode
 print("\nBenchmarking decode...")
@@ -84,7 +90,13 @@ local decodeAvgMs = decodeTotalMs / ITERATIONS
 
 print(string.format("  Total: %.2f ms", decodeTotalMs))
 print(string.format("  Average: %.4f ms", decodeAvgMs))
-print(string.format("  Target: %.2f ms - %s", TARGET_DECODE_MS, decodeAvgMs < TARGET_DECODE_MS and "✓ PASS" or "✗ FAIL"))
+print(
+	string.format(
+		"  Target: %.2f ms - %s",
+		TARGET_DECODE_MS,
+		decodeAvgMs < TARGET_DECODE_MS and "✓ PASS" or "✗ FAIL"
+	)
+)
 
 print("\n=== Benchmark Complete ===\n")
 
