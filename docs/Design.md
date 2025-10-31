@@ -28,12 +28,6 @@ datum-serde is a layered system for type-safe data serialization, validation, an
 │  - Deterministic transformations               │
 │  - Cycle detection                             │
 └────────────────────────────────────────────────┘
-          │
-┌─────────▼─────────────────────────────────────┐
-│          Adapter (Storage)                     │
-│  - DataStore (with retry logic)                │
-│  - Budget-aware operations                     │
-└────────────────────────────────────────────────┘
 ```
 
 ## Core Flow
@@ -198,30 +192,6 @@ E:Migration: step 1 -> 2 failed: invalid v1 data
 E:DataStore: read failed after 3 attempts: Budget exceeded
 ```
 
-## DataStore Adapter
-
-### Features
-
-1. **Retry logic** - Exponential backoff with jitter
-2. **Budget-aware** - Detects throttle errors and retries
-3. **Configurable** - `setMaxRetries()`, `setBaseDelay()`
-4. **Type-safe** - Only accepts string payloads
-
-### Backoff Formula
-
-```
-delay = baseDelay * (2^(attempt-1)) + jitter
-jitter = random(0%, 30%) * delay
-```
-
-Default: 1s, 2s, 4s with jitter
-
-### Error Handling
-
-- Retries on budget/throttle errors
-- Fails fast on key not found or invalid input
-- Returns descriptive error with attempt count
-
 ## Performance Considerations
 
 ### Targets (v0.1)
@@ -287,23 +257,14 @@ Default: 1s, 2s, 4s with jitter
 4. **Metatables forbidden** - Plain tables only
 5. **Version markers** - Explicit version field in all schemas
 
-## Compatibility: ProfileStore
+## Storage Integration
 
-datum-serde works alongside ProfileStore by storing only the serialized payload:
+datum-serde is storage-agnostic. Example adapters for common backends are provided in `examples/`:
 
-```lua
-Profile.Data = {
-    blob = "<datum-serde JSON payload>"
-}
-```
+- **DataStore**: Direct key-value storage with retry logic
+- **ProfileStore**: Session-based storage with auto-save
 
-Workflow:
-1. Load Profile → extract `blob`
-2. Decode → Migrate → Update
-3. Encode → save back to `blob`
-4. Release Profile
-
-Use the example `PlayerStore` module for a complete integration pattern.
+See `examples/` for reference implementations.
 
 ## Future Work (v0.2+)
 

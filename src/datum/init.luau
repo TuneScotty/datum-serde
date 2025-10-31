@@ -7,15 +7,12 @@ Time complexity: O(1)
 ]]
 
 local DatumSerde = {
-	schema = require(script.schema),
-	serde = require(script.serde),
-	migrate = require(script.migrate),
+	schema = require("./schema"),
+	serde = require("./serde"),
+	migrate = require("./migrate"),
 	codec = {
-		json = require(script.codec.json),
-		binary = require(script.codec.binary),
-	},
-	adapter = {
-		datastore = require(script.adapter.datastore),
+		json = require("./codec/json"),
+		binary = require("./codec/binary"),
 	},
 }
 

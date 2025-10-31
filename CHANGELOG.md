@@ -15,11 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JSON codec with safety checks (cycle detection, NaN/Inf rejection, size limits)
 - Serde module for high-level encode/decode operations
 - Migration system with DAG-based version transitions and cycle detection
-- DataStore adapter with exponential backoff retry logic
 - Comprehensive test suite (schema, codec, migration, integration)
 - Benchmark harness for performance regression detection
-- PlayerStore example demonstrating ProfileStore integration
-- Complete CI/CD pipeline (lint, typecheck, build, test, publish)
+- Example adapters for DataStore and ProfileStore integration
+- Complete CI/CD pipeline (lint, test, build, publish)
 - Design documentation covering architecture and implementation details
 
 ### Schema Features
@@ -48,13 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plan locking for production safety
 - Multi-step migration support (e.g., V1 → V2 → V3)
 
-### DataStore Features
-
-- Retry logic with exponential backoff and jitter
-- Budget-aware throttle detection
-- Configurable max retries and base delay
-- Type-safe string payload handling
-
 ### Performance
 
 - Encode target: <2ms avg per 10k records
@@ -62,5 +54,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Linear time complexity for all operations
 - Bounded allocations (no quadratic behavior)
 
-[Unreleased]: https://github.com/x6ski/datum-serde/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/x6ski/datum-serde/releases/tag/v0.1.0
+[Unreleased]: https://github.com/TuneScotty/datum-serde/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/TuneScotty/datum-serde/releases/tag/v0.1.0

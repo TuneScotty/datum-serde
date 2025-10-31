@@ -1,11 +1,12 @@
 [package]
-name = "x6ski/datum-serde"
+name = "TuneScotty/datum-serde"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 description = "Type-safe data serialization, migration, and versioning for Roblox"
 license = "MIT"
-authors = ["x6ski"]
+authors = ["TuneScotty"]
+files = ["src"]
 
 [dependencies]
 

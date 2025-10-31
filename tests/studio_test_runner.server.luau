@@ -24,6 +24,9 @@ local migrateTests = require(testFolder:WaitForChild("migrate_spec"))
 local integrationTests = require(testFolder:WaitForChild("integration_spec"))
 local profileStoreIntegrationTests = require(testFolder:WaitForChild("profilestore_integration_spec"))
 
+-- Import benchmark
+local benchmark = require(script.Parent:WaitForChild("Benchmark"))
+
 print("\n" .. string.rep("=", 60))
 print("DATUM-SERDE TEST SUITE")
 print(string.rep("=", 60) .. "\n")
@@ -50,6 +53,13 @@ runSuite("Codec Tests", codecTests)
 runSuite("Migration Tests", migrateTests)
 runSuite("Integration Tests", integrationTests)
 runSuite("ProfileStore Integration Tests", profileStoreIntegrationTests)
+
+-- Run benchmark
+print("\n" .. string.rep("-", 60))
+print("Running: Performance Benchmark")
+print(string.rep("-", 60))
+local benchmarkResults = benchmark
+print("\n✅ BENCHMARK COMPLETE")
 
 print("\n" .. string.rep("=", 60))
 if success then

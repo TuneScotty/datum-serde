@@ -6,9 +6,12 @@ Arguments: None
 Time complexity: O(n*m) where n = iterations, m = data size
 ]]
 
-local Schema = require(script.Parent.Parent.src.datum.schema)
-local Serde = require(script.Parent.Parent.src.datum.serde)
-local JSON = require(script.Parent.Parent.src.datum.codec.json)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DatumSerde = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("DatumSerde")
+
+local Schema = require(DatumSerde.schema)
+local Serde = require(DatumSerde.serde)
+local JSON = require(DatumSerde.codec.json)
 
 local ITERATIONS = 10000
 local TARGET_ENCODE_MS = 2.0

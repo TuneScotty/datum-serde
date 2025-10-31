@@ -19,11 +19,11 @@
       "RunTests": {
         "$path": "tests/studio_test_runner.server.luau"
       },
+      "Benchmark": {
+        "$path": "benches/encode_decode.luau"
+      },
       "DatumSerdeTestRunner": {
         "$className": "Folder",
-        "runner": {
-          "$path": "tests/runner.luau"
-        },
         "schema_spec": {
           "$path": "tests/schema.spec.luau"
         },

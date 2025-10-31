@@ -8,8 +8,8 @@ Type-safe data serialization, migration, and versioning for Roblox.
 - **JSON serialization** with deterministic encoding (binary in v0.2)
 - **Versioned migrations** with DAG-based planning and deterministic transforms
 - **Validation** with precise error paths (e.g., `/inventory/3/name: expected string, got number`)
-- **Storage-agnostic** adapters with first-class DataStore support
 - **Robust error handling** with detailed failure reasons
+- **Example adapters** for DataStore and ProfileStore integration
 
 ## Installation
 
@@ -17,7 +17,7 @@ Type-safe data serialization, migration, and versioning for Roblox.
 
 ```toml
 [dependencies]
-DatumSerde = "x6ski/datum-serde@0.1.0"
+DatumSerde = "TuneScotty/datum-serde@0.1.0"
 ```
 
 ## Quick Start
@@ -30,27 +30,27 @@ local M = require(ReplicatedStorage.Packages.DatumSerde.migrate)
 
 -- Define schemas
 local V1 = S.object({
-	version = S.literal("1"),
-	coins = S.number(),
-	inventory = S.array(S.string())
+    version = S.literal("1"),
+    coins = S.number(),
+    inventory = S.array(S.string())
 })
 
 local V2 = S.object({
-	version = S.literal("2"),
-	coins = S.number(),
-	inventory = S.array(S.string()),
-	flags = S.map(S.string(), S.boolean())
+    version = S.literal("2"),
+    coins = S.number(),
+    inventory = S.array(S.string()),
+    flags = S.map(S.string(), S.boolean())
 })
 
 -- Create migration plan
 local plan = M.plan()
 plan:add("1", "2", function(v)
-	if type(v) ~= "table" or v.version ~= "1" then
-		return false, "bad v1"
-	end
-	v.version = "2"
-	v.flags = {}
-	return true, v
+    if type(v) ~= "table" or v.version ~= "1" then
+        return false, "bad v1"
+    end
+    v.version = "2"
+    v.flags = {}
+    return true, v
 end)
 
 -- Load, migrate, save
