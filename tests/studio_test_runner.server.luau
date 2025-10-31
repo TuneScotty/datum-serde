@@ -12,11 +12,11 @@ if not testFolder then
 	error("DatumSerdeTestRunner folder not found in ServerScriptService. Make sure Rojo is synced.")
 end
 
-local schemaTests = require(testFolder:WaitForChild("schema_spec"))
 local codecTests = require(testFolder:WaitForChild("codec_spec"))
-local migrateTests = require(testFolder:WaitForChild("migrate_spec"))
 local integrationTests = require(testFolder:WaitForChild("integration_spec"))
+local migrateTests = require(testFolder:WaitForChild("migrate_spec"))
 local profileStoreIntegrationTests = require(testFolder:WaitForChild("profilestore_integration_spec"))
+local schemaTests = require(testFolder:WaitForChild("schema_spec"))
 
 print("\n" .. string.rep("=", 60))
 print("DATUM-SERDE TEST SUITE")

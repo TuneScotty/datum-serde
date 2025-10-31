@@ -9,10 +9,10 @@ Time complexity: O(n) per test where n = data size
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatumSerde = ReplicatedStorage.Packages.DatumSerde
 
-local Schema = require(DatumSerde.schema)
-local Serde = require(DatumSerde.serde)
 local JSON = require(DatumSerde.codec.json)
 local Migrate = require(DatumSerde.migrate)
+local Schema = require(DatumSerde.schema)
+local Serde = require(DatumSerde.serde)
 
 local function assert(condition: boolean, message: string?)
 	if not condition then

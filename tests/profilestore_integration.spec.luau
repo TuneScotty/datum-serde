@@ -10,10 +10,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DatumSerde = ReplicatedStorage.Packages.DatumSerde
 local ProfileStore = require(ReplicatedStorage.Packages.DevPackages.ProfileStore)
 
-local Schema = require(DatumSerde.schema)
-local Serde = require(DatumSerde.serde)
 local JSON = require(DatumSerde.codec.json)
 local Migrate = require(DatumSerde.migrate)
+local Schema = require(DatumSerde.schema)
+local Serde = require(DatumSerde.serde)
 
 local function assert(condition: boolean, message: string?)
 	if not condition then
