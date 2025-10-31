@@ -82,6 +82,9 @@ jobs:
         with:
           name: datum-serde
 
+      - name: Verify artifacts
+        run: ls -lh
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
