@@ -24,7 +24,7 @@ jobs:
         run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
 
       - name: Install tools
-        run: rokit install --trust
+        run: rokit install --no-trust-check
 
       - name: Run StyLua
         run: stylua --check src/ tests/
@@ -45,7 +45,7 @@ jobs:
         run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
 
       - name: Install tools
-        run: rokit install --trust
+        run: rokit install --no-trust-check
 
       - name: Cache Wally
         uses: actions/cache@v4
