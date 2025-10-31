@@ -81,11 +81,11 @@ local function testVersionMigration()
 
 	-- Create migration plan
 	local plan = Migrate.plan()
-	plan:add("1", "2", function(v)
-		if type(v) ~= "table" or v.version ~= "1" then
+	plan:add("1", "2", function(_v)
+		if type(_v) ~= "table" or _v.version ~= "1" then
 			return false, "bad v1"
 		end
-		local result = table.clone(v)
+		local result = table.clone(_v)
 		result.version = "2"
 		result.flags = {}
 		return true, result
@@ -268,13 +268,39 @@ local function testMultiStepMigration()
 	local ok2, v1Dec = Serde.decode(V1, v1Payload, JSON)
 	assert(ok2, "V1 decode should succeed")
 
-	-- Migrate to V3
-	local ok3, v3 = Migrate.apply(plan, v1Dec, "1", "3")
-	assert(ok3, "multi-step migration should succeed")
+	-- Migrate V1 -> V2
+	local ok3, v2Data = Migrate.apply(plan, v1Dec, "1", "2")
+	assert(ok3, "V1->V2 migration should succeed")
+	assert(v2Data.version == "2", "should reach V2")
+	assert(v2Data.gold == 1000, "gold should be preserved in V2")
+	assert(v2Data.silver == 0, "silver should be added in V2")
+
+	-- Validate V2 round-trip
+	local ok4, v2Payload = Serde.encode(V2, v2Data, JSON)
+	assert(ok4, "V2 encode should succeed")
+
+	local ok5, v2Final = Serde.decode(V2, v2Payload, JSON)
+	assert(ok5, "V2 decode should succeed")
+	assert(v2Final.gold == 1000, "V2 round-trip should preserve gold")
+	assert(v2Final.silver == 0, "V2 round-trip should preserve silver")
+
+	-- Migrate V2 -> V3
+	local ok6, v3 = Migrate.apply(plan, v2Final, "2", "3")
+	assert(ok6, "V2->V3 migration should succeed")
 	assert(v3.version == "3", "should reach V3")
 	assert(v3.currency.gold == 1000, "gold should be preserved through migration")
-	assert(v3.currency.silver == 0, "silver should be added in V2")
+	assert(v3.currency.silver == 0, "silver should be preserved through migration")
 	assert(v3.currency.copper == 0, "copper should be added in V3")
+
+	-- Validate V3 round-trip
+	local ok7, v3Payload = Serde.encode(V3, v3, JSON)
+	assert(ok7, "V3 encode should succeed")
+
+	local ok8, v3Final = Serde.decode(V3, v3Payload, JSON)
+	assert(ok8, "V3 decode should succeed")
+	assert(v3Final.currency.gold == 1000, "V3 round-trip should preserve gold")
+	assert(v3Final.currency.silver == 0, "V3 round-trip should preserve silver")
+	assert(v3Final.currency.copper == 0, "V3 round-trip should preserve copper")
 
 	print("✓ Multi-step migration passes")
 end

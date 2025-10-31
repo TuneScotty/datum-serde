@@ -107,7 +107,7 @@ local function testLimits()
 	-- Test depth limit
 	local deepNested: any = {}
 	local current = deepNested
-	for i = 1, 150 do
+	for _ = 1, 150 do
 		current.next = {}
 		current = current.next
 	end

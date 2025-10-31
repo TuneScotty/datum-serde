@@ -6,9 +6,6 @@ Arguments: None
 Time complexity: O(sum of all tests)
 ]]
 
--- Wait for services to load
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 -- Import test modules from ServerScriptService
 local testFolder = script.Parent:FindFirstChild("DatumSerdeTestRunner")
 if not testFolder then
@@ -35,10 +32,10 @@ local function runSuite(name: string, testFn: () -> ())
 	local ok, err = pcall(testFn)
 	if not ok then
 		success = false
-		print("\n❌ FAILED: " .. name)
+		print("\n✗ FAILED: " .. name)
 		print("Error: " .. tostring(err))
 	else
-		print("\n✅ PASSED: " .. name)
+		print("\n✓ PASSED: " .. name)
 	end
 end
 
@@ -52,12 +49,12 @@ runSuite("ProfileStore Integration Tests", profileStoreIntegrationTests)
 print("\n" .. string.rep("-", 60))
 print("Running: Performance Benchmark")
 print(string.rep("-", 60))
-print("\n✅ BENCHMARK COMPLETE")
+print("\n✓ BENCHMARK COMPLETE")
 
 print("\n" .. string.rep("=", 60))
 if success then
-	print("✅ ALL TESTS PASSED")
+	print("✓ ALL TESTS PASSED")
 else
-	print("❌ SOME TESTS FAILED")
+	print("✗ SOME TESTS FAILED")
 end
 print(string.rep("=", 60) .. "\n")

@@ -320,7 +320,7 @@ function Schema.union<T>(...: Schema<any>): Schema<T>
 		_inner = schemas,
 		validate = function(value: any, path: string): (boolean, string?)
 			local errors = {}
-			for i, schema in ipairs(schemas) do
+			for _, schema in ipairs(schemas) do
 				local ok, err = schema.validate(value, path)
 				if ok then
 					return true

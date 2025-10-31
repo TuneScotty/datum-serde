@@ -183,7 +183,7 @@ local function testMigrationFailure()
 	print("Testing migration failure propagation...")
 
 	local plan = Migrate.plan()
-	plan:add("1", "2", function(v)
+	plan:add("1", "2", function(_v)
 		return false, "intentional failure"
 	end)
 

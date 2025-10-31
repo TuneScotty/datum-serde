@@ -151,9 +151,6 @@ local function testProfileStoreWithValidation()
 		level = 1,
 	}
 
-	-- Create ProfileStore
-	local store = ProfileStore.New("TestStore_" .. tostring(os.time()), template)
-
 	-- Validate template
 	local okTemplate, errTemplate = PlayerV3.validate(template, "/template")
 	assert(okTemplate, "ProfileStore template should be valid: " .. tostring(errTemplate))
@@ -302,7 +299,6 @@ local function testFullProfileStoreWorkflow()
 		items = {},
 		level = 1,
 	}
-	local store = ProfileStore.New("FullWorkflow_" .. tostring(os.time()), template)
 
 	-- Step 2: Simulate old player data (V2 format) that was saved
 	local savedV2Data = {
@@ -352,6 +348,87 @@ local function testFullProfileStoreWorkflow()
 	print("✓ Full ProfileStore workflow passes")
 end
 
+local function testProfileStoreSessionWithDatumSerde()
+	print("Testing ProfileStore session with datum-serde validation and migration")
+
+	-- Create actual ProfileStore instance
+	local template = {
+		version = "3",
+		currency = { coins = 100, gems = 0 },
+		items = {},
+		level = 1,
+	}
+	local store = ProfileStore.New("TestStore", template)
+
+	-- Start a real ProfileStore session
+	local profile = store:StartSessionAsync("test_player_" .. tostring(os.time()), {
+		Cancel = function()
+			return false
+		end,
+	})
+
+	assert(profile ~= nil, "ProfileStore session should be created")
+	assert(profile.Data ~= nil, "Profile.Data should exist")
+
+	-- Validate template against V3 schema
+	local okTemplate, errTemplate = PlayerV3.validate(template, "/template")
+	assert(okTemplate, "Template should be valid V3: " .. tostring(errTemplate))
+	print(profile.Data)
+	
+	-- Validate initial profile data
+	local okInitial, errInitial = PlayerV3.validate(profile.Data, "/initial")
+	assert(okInitial, "Initial profile.Data should be valid V3: " .. tostring(errInitial))
+
+	-- Simulate updating profile with migrated data
+	local v1Data = {
+		version = "1",
+		coins = 250,
+		items = { "axe", "pickaxe" },
+	}
+	print("  [0] Original V1 data (version " .. v1Data.version .. "):")
+	print(v1Data)
+
+	-- Migrate V1 -> V2
+	local okMigrate1, v2Data = Migrate.apply(migrationPlan, v1Data, "1", "2")
+	assert(okMigrate1, "V1->V2 migration should succeed: " .. tostring(v2Data))
+	print("  [1] V1->V2 migrated data (version " .. v2Data.version .. "):")
+	print(v2Data)
+
+	-- Migrate V2 -> V3
+	local okMigrate2, v3Data = Migrate.apply(migrationPlan, v2Data, "2", "3")
+	assert(okMigrate2, "V2->V3 migration should succeed: " .. tostring(v3Data))
+	print("  [2] V2->V3 migrated data (version " .. v3Data.version .. "):")
+	print(v3Data)
+
+	-- Update profile.Data with final migrated values
+	for k, v in pairs(v3Data) do
+		profile.Data[k] = v
+	end
+
+	-- Validate migrated data in profile
+	local okMigrated, errMigrated = PlayerV3.validate(profile.Data, "/migrated")
+	assert(okMigrated, "Migrated profile.Data should be valid V3: " .. tostring(errMigrated))
+
+	-- Encode profile data
+	local okEncode, encoded = Serde.encode(PlayerV3, profile.Data, JSON)
+	assert(okEncode, "Encode should succeed: " .. tostring(encoded))
+
+	-- Decode back
+	local okDecode, decoded = Serde.decode(PlayerV3, encoded, JSON)
+	assert(okDecode, "Decode should succeed: " .. tostring(decoded))
+	print("  [3] Final decoded profile (version " .. decoded.version .. "):")
+	print(decoded)
+
+	-- Verify data integrity through ProfileStore
+	assert(decoded.currency.coins == 250, "Coins should be preserved through ProfileStore")
+	assert(#decoded.items == 2, "Items should be preserved through ProfileStore")
+
+	-- End session
+	profile:EndSession()
+
+	print("✓ ProfileStore session with datum-serde passes")
+end
+
 -- Run all tests
 local function runTests()
 	print("\n=== ProfileStore Integration Tests ===\n")
@@ -362,6 +439,7 @@ local function runTests()
 	testReconcilePattern()
 	testChainedMigrations()
 	testFullProfileStoreWorkflow()
+	testProfileStoreSessionWithDatumSerde()
 	print("\n=== All ProfileStore Integration Tests Passed ===\n")
 end
 

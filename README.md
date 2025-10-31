@@ -17,7 +17,7 @@ Type-safe data serialization, migration, and versioning for Roblox.
 
 ```toml
 [dependencies]
-DatumSerde = "TuneScotty/datum-serde@0.1.0"
+DatumSerde = "tunescotty/datum-serde@0.1.0"
 ```
 
 ## Quick Start
