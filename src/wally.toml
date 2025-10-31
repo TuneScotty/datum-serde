@@ -1,13 +1,8 @@
 [package]
 name = "tunescotty/datum-serde"
-version = "0.1.1"
+version = "0.1.2"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 description = "Type-safe data serialization, migration, and versioning for Roblox"
 license = "MIT"
 authors = ["TuneScotty"]
-
-[dependencies]
-
-[dev-dependencies]
-ProfileStore = "lm-loleris/profilestore@1.0.3"
