@@ -20,6 +20,9 @@ jobs:
       - name: Install Rokit
         run: curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
 
+      - name: Add Rokit to PATH
+        run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
+
       - name: Install tools
         run: rokit install
 
@@ -37,6 +40,9 @@ jobs:
 
       - name: Install Rokit
         run: curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+
+      - name: Add Rokit to PATH
+        run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
 
       - name: Install tools
         run: rokit install
@@ -65,6 +71,9 @@ jobs:
 
       - name: Install Rokit
         run: curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+
+      - name: Add Rokit to PATH
+        run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
 
       - name: Install tools
         run: rokit install
@@ -114,6 +123,6 @@ jobs:
 
             ### Installation
             - Download `datum-serde.rbxm` and import into Roblox Studio
-            - Or use Wally: `DatumSerde = "x6ski/datum-serde@${{ github.ref_name }}"`
+            - Or use Wally: `DatumSerde = "TuneScotty/datum-serde@${{ github.ref_name }}"`
 
             See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for usage.
