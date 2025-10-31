@@ -32,11 +32,10 @@ wally install
 
 ### pesde
 
-Add to your `pesde.toml`:
+Run:
 
-```toml
-[dependencies]
-datum_serde = { name = "tunescotty/datum_serde", version = "0.1.2" }
+```bash
+pesde add tunescotty/datum_serde
 ```
 
 Then run:
