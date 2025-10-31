@@ -15,9 +15,32 @@ Type-safe data serialization, migration, and versioning for Roblox.
 
 ### Wally
 
+Add to your `wally.toml`:
+
 ```toml
 [dependencies]
-DatumSerde = "tunescotty/datum-serde@0.1.0"
+DatumSerde = "tunescotty/datum-serde@0.1.2"
+```
+
+Then run:
+
+```bash
+wally install
+```
+
+### pesde
+
+Add to your `pesde.toml`:
+
+```toml
+[dependencies]
+datum_serde = { name = "tunescotty/datum_serde", version = "0.1.2" }
+```
+
+Then run:
+
+```bash
+pesde install
 ```
 
 ## Quick Start
