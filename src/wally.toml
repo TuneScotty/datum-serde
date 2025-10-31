@@ -6,3 +6,8 @@ realm = "shared"
 description = "Type-safe data serialization, migration, and versioning for Roblox"
 license = "MIT"
 authors = ["TuneScotty"]
+
+[dependencies]
+
+[dev-dependencies]
+ProfileStore = "lm-loleris/profilestore@1.0.3"
