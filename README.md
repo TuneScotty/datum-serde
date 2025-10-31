@@ -1,5 +1,7 @@
 # datum-serde
 
+![DatumSerde Logo](public/misc/DatumSerde.png)
+
 Type-safe data serialization, migration, and versioning for Roblox.
 
 ## Features
