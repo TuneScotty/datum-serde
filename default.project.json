@@ -8,9 +8,6 @@
         "$className": "Folder",
         "DatumSerde": {
           "$path": "src/datum"
-        },
-        "DevPackages": {
-          "$path": "DevPackages"
         }
       }
     },

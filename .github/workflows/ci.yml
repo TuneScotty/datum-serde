@@ -85,7 +85,10 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: datum-serde.rbxm
+          files: |
+            datum-serde.rbxm
+            datum-serde-src.zip
+            datum-serde-src.trz
           body: |
             ## datum-serde ${{ github.ref_name }}
 
