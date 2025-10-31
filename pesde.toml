@@ -1,6 +1,6 @@
 authors = ["TuneScotty"]
 name = "tunescotty/datum_serde"
-version = "0.1.3"
+version = "0.1.5"
 description = "Type-safe data serialization, migration, and versioning for Roblox"
 license = "MIT"
 repository = "https://github.com/TuneScotty/datum-serde"
@@ -14,8 +14,8 @@ includes = [
 
 [target]
 environment = "roblox"
-lib = "src/datum/init.luau"
-build_files = ["src", "src/datum", "src/datum/codec"]
+lib = "src/init.luau"
+build_files = ["src", "src/codec"]
 
 [indices]
 default = "https://github.com/pesde-pkg/index"

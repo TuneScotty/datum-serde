@@ -7,7 +7,7 @@
       "Packages": {
         "$className": "Folder",
         "DatumSerde": {
-          "$path": "src/datum"
+          "$path": "src"
         }
       }
     },
