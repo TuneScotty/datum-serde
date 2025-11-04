@@ -25,7 +25,7 @@ Add to your `wally.toml`:
 
 ```toml
 [dependencies]
-DatumSerde = "tunescotty/datum-serde@0.1.2"
+DatumSerde = "tunescotty/datum-serde@0.1.5"
 ```
 
 Then run:
