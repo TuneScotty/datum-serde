@@ -14,6 +14,7 @@ Type-safe data serialization, migration, and versioning for Roblox.
 - **JSON serialization** with deterministic encoding (binary in v0.2)
 - **Versioned migrations** with DAG-based planning and deterministic transforms
 - **Validation** with precise error paths (e.g., `/inventory/3/name: expected string, got number`)
+- **Opt-in strict schemas** (`strictArray`, `strictObject`) and **discriminated unions** (`taggedUnion`)
 - **Robust error handling** with detailed failure reasons
 - **Example adapters** for DataStore and ProfileStore integration
 
@@ -25,7 +26,7 @@ Add to your `wally.toml`:
 
 ```toml
 [dependencies]
-DatumSerde = "tunescotty/datum-serde@0.1.5"
+DatumSerde = "tunescotty/datum-serde@0.1.6"
 ```
 
 Then run:
@@ -51,10 +52,12 @@ pesde install
 ## Quick Start
 
 ```lua
-local S = require(ReplicatedStorage.Packages.DatumSerde.schema)
-local Serde = require(ReplicatedStorage.Packages.DatumSerde.serde)
-local JSON = require(ReplicatedStorage.Packages.DatumSerde.codec.json)
-local M = require(ReplicatedStorage.Packages.DatumSerde.migrate)
+local DatumSerde = require(ReplicatedStorage.Packages.DatumSerde)
+
+local S = DatumSerde.schema
+local Serde = DatumSerde.serde
+local JSON = DatumSerde.codec.json
+local M = DatumSerde.migrate
 
 -- Define schemas
 local V1 = S.object({
@@ -94,7 +97,7 @@ if not okE then error(newPayload) end
 
 ## Documentation
 
-See [docs/Design.md](docs/Design.md) for architecture details.
+See [public/docs/Design.md](public/docs/Design.md) for architecture details.
 
 ## License
 

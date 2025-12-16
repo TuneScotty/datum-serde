@@ -198,6 +198,65 @@ local function testRefine()
 	print("✓ Refine schema passes")
 end
 
+local function testStrictArray()
+	print("Testing strictArray schema...")
+
+	local arrSchema = Schema.strictArray(Schema.number())
+	local ok, err = arrSchema.validate({ 1, 2, 3 }, "/test")
+	assert(ok, "strictArray should validate number array")
+
+	local mixed = { 1, 2, 3 }
+	(mixed :: any).x = 1
+	ok, err = arrSchema.validate(mixed, "/test")
+	assert(not ok and err, "strictArray should reject extra keys")
+
+	local holey: any = { 1, 2, 3 }
+	holey[2] = nil
+	ok, err = arrSchema.validate(holey, "/test")
+	assert(not ok and err, "strictArray should reject holes")
+
+	print("✓ strictArray schema passes")
+end
+
+local function testStrictObject()
+	print("Testing strictObject schema...")
+
+	local objSchema = Schema.strictObject({
+		name = Schema.string(),
+		age = Schema.number(),
+	})
+
+	local ok, err = objSchema.validate({ name = "Alice", age = 30 }, "/test")
+	assert(ok, "strictObject should validate known fields")
+
+	ok, err = objSchema.validate({ name = "Alice", age = 30, extra = true }, "/test")
+	assert(not ok and err, "strictObject should reject unknown fields")
+	assert(string.find(err :: string, "unknown field"), "error should mention unknown field")
+
+	print("✓ strictObject schema passes")
+end
+
+local function testTaggedUnion()
+	print("Testing taggedUnion schema...")
+
+	local u = Schema.taggedUnion("kind", {
+		A = Schema.object({ kind = Schema.literal("A"), a = Schema.number() }),
+		B = Schema.object({ kind = Schema.literal("B"), b = Schema.string() }),
+	})
+
+	local ok, err = u.validate({ kind = "A", a = 1 }, "/test")
+	assert(ok, "taggedUnion should validate variant A")
+
+	ok, err = u.validate({ kind = "B", b = "x" }, "/test")
+	assert(ok, "taggedUnion should validate variant B")
+
+	ok, err = u.validate({ kind = "C" }, "/test")
+	assert(not ok and err, "taggedUnion should reject unknown tag")
+	assert(string.find(err :: string, "unknown tag"), "error should mention unknown tag")
+
+	print("✓ taggedUnion schema passes")
+end
+
 local function testRoundTrip()
 	print("Testing encode/decode round-trip...")
 
@@ -234,6 +293,9 @@ local function runTests()
 	testUnion()
 	testOptional()
 	testRefine()
+	testStrictArray()
+	testStrictObject()
+	testTaggedUnion()
 	testRoundTrip()
 	print("\n=== All Schema Tests Passed ===\n")
 end

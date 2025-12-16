@@ -1,5 +1,7 @@
 # ProfileStore + datum-serde Integration
 
+<!-- markdownlint-disable MD031 MD032 -->
+
 Production-ready example combining **ProfileStore** (session-locked data) with **datum-serde** (validation + migration).
 
 ## Quick Start
@@ -34,15 +36,15 @@ rojo serve
 ## Usage
 
 ```lua
-local PlayerDataManager = require(ServerScriptService.ProfileStoreExample)
+local PlayerDataManager = require(script.Parent)
 
 -- Load player (auto on join)
 local ok, profile = PlayerDataManager.loadPlayer(player)
 if not ok then player:Kick("Failed to load profile") end
 
 -- Access data
-profile.Data.currency.coins += 100
-profile.Data.stats.kills += 1
+profile.Data.currency.coins = profile.Data.currency.coins + 100
+profile.Data.stats.kills = profile.Data.stats.kills + 1
 -- Auto-saves periodically
 ```
 

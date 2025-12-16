@@ -7,8 +7,9 @@ Time complexity: O(n) per test where n = data size + migration cost
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
 local DatumSerde = ReplicatedStorage.Packages.DatumSerde
-local ProfileStore = require(ReplicatedStorage.Packages.DevPackages.ProfileStore)
+local ProfileStore = require(ServerScriptService.ServerPackages.ProfileStore)
 
 local JSON = require(DatumSerde.codec.json)
 local Migrate = require(DatumSerde.migrate)

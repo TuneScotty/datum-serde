@@ -7,10 +7,8 @@ Time complexity: O(n) where n = data size + migration cost
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
 
 local DatumSerde = require(ReplicatedStorage.Packages.DatumSerde)
-local ProfileStore = require(ReplicatedStorage.Packages.DevPackages.ProfileStore)
 local ProfileStoreAdapter = require(ReplicatedStorage.Packages.DatumSerde.adapter.profilestore)
 
 local Schema = DatumSerde.schema

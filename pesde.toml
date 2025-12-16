@@ -1,6 +1,6 @@
 authors = ["TuneScotty"]
 name = "tunescotty/datum_serde"
-version = "0.1.5"
+version = "0.1.6"
 description = "Type-safe data serialization, migration, and versioning for Roblox"
 license = "MIT"
 repository = "https://github.com/TuneScotty/datum-serde"

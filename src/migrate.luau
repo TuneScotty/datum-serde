@@ -67,15 +67,16 @@ local function findPath(plan: MigrationPlan, fromVer: string, toVer: string): ({
 		return {}
 	end
 
-	local queue = { { ver = fromVer, path = { fromVer } } }
-	local visited = { [fromVer] = true }
+	local queue = { fromVer }
 	local head = 1
+	local visited = { [fromVer] = true }
+	local prev: { [string]: string } = {}
 
 	while head <= #queue do
-		local current = queue[head]
+		local currentVer = queue[head]
 		head = head + 1
 
-		local node = plan.graph[current.ver]
+		local node = plan.graph[currentVer]
 		if not node then
 			continue
 		end
@@ -85,15 +86,30 @@ local function findPath(plan: MigrationPlan, fromVer: string, toVer: string): ({
 				continue
 			end
 
-			local newPath = table.clone(current.path)
-			table.insert(newPath, nextVer)
+			visited[nextVer] = true
+			prev[nextVer] = currentVer
 
 			if nextVer == toVer then
-				return newPath
+				local reversePath = { toVer }
+				local walk = toVer
+				while walk ~= fromVer do
+					local p = prev[walk]
+					if not p then
+						break
+					end
+					table.insert(reversePath, p)
+					walk = p
+				end
+
+				local path = {}
+				for i = #reversePath, 1, -1 do
+					table.insert(path, reversePath[i])
+				end
+
+				return path
 			end
 
-			visited[nextVer] = true
-			table.insert(queue, { ver = nextVer, path = newPath })
+			table.insert(queue, nextVer)
 		end
 	end
 

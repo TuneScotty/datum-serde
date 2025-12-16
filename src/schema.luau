@@ -418,4 +418,184 @@ function Schema.refine<T>(schema: Schema<T>, predicate: (value: T) -> boolean, m
 	}
 end
 
+function Schema.strictArray<T>(elemSchema: Schema<T>): Schema<{ T }>
+	return {
+		kind = "strictArray",
+		_inner = elemSchema,
+		validate = function(value: any, path: string): (boolean, string?)
+			if type(value) ~= "table" then
+				return false, path .. ": expected array, got " .. typeof(value)
+			end
+
+			local maxIndex = 0
+			local count = 0
+			for k, _ in pairs(value) do
+				if type(k) ~= "number" or k % 1 ~= 0 or k < 1 then
+					return false, path .. ": expected array, got " .. typeof(value)
+				end
+				if k > maxIndex then
+					maxIndex = k
+				end
+				count = count + 1
+			end
+
+			for i = 1, maxIndex do
+				if (value :: any)[i] == nil then
+					return false, path .. "/" .. tostring(i - 1) .. ": expected value, got nil"
+				end
+				local ok, err = elemSchema.validate((value :: any)[i], path .. "/" .. tostring(i - 1))
+				if not ok then
+					return false, err
+				end
+			end
+
+			if count ~= maxIndex then
+				return false, path .. ": expected array, got " .. typeof(value)
+			end
+
+			return true
+		end,
+		encode = function(value: { T }): any
+			local result = {}
+			for i, v in ipairs(value) do
+				result[i] = elemSchema.encode(v)
+			end
+			return result
+		end,
+		decode = function(value: any, path: string): (boolean, { T } | string)
+			if type(value) ~= "table" then
+				return false, path .. ": expected array, got " .. typeof(value)
+			end
+
+			local maxIndex = 0
+			local count = 0
+			for k, _ in pairs(value) do
+				if type(k) ~= "number" or k % 1 ~= 0 or k < 1 then
+					return false, path .. ": expected array, got " .. typeof(value)
+				end
+				if k > maxIndex then
+					maxIndex = k
+				end
+				count = count + 1
+			end
+
+			if count ~= maxIndex then
+				return false, path .. ": expected array, got " .. typeof(value)
+			end
+
+			local result = {}
+			for i = 1, maxIndex do
+				if (value :: any)[i] == nil then
+					return false, path .. "/" .. tostring(i - 1) .. ": expected value, got nil"
+				end
+				local ok, decoded = elemSchema.decode((value :: any)[i], path .. "/" .. tostring(i - 1))
+				if not ok then
+					return false, decoded
+				end
+				result[i] = decoded
+			end
+			return true, result
+		end,
+	}
+end
+
+function Schema.strictObject<T>(shape: { [string]: Schema<any> }): Schema<T>
+	return {
+		kind = "strictObject",
+		_inner = shape,
+		validate = function(value: any, path: string): (boolean, string?)
+			if type(value) ~= "table" then
+				return false, path .. ": expected object, got " .. typeof(value)
+			end
+			for k, _ in pairs(value) do
+				if type(k) ~= "string" or shape[k] == nil then
+					return false, path .. ": unknown field " .. tostring(k)
+				end
+			end
+			for fieldName, fieldSchema in pairs(shape) do
+				local fieldValue = (value :: any)[fieldName]
+				local ok, err = fieldSchema.validate(fieldValue, path .. "/" .. fieldName)
+				if not ok then
+					return false, err
+				end
+			end
+			return true
+		end,
+		encode = function(value: T): any
+			local result = {}
+			for fieldName, fieldSchema in pairs(shape) do
+				local fieldValue = (value :: any)[fieldName]
+				result[fieldName] = fieldSchema.encode(fieldValue)
+			end
+			return result
+		end,
+		decode = function(value: any, path: string): (boolean, T | string)
+			if type(value) ~= "table" then
+				return false, path .. ": expected object, got " .. typeof(value)
+			end
+			for k, _ in pairs(value) do
+				if type(k) ~= "string" or shape[k] == nil then
+					return false, path .. ": unknown field " .. tostring(k)
+				end
+			end
+			local result = {}
+			for fieldName, fieldSchema in pairs(shape) do
+				local fieldValue = (value :: any)[fieldName]
+				local ok, decoded = fieldSchema.decode(fieldValue, path .. "/" .. fieldName)
+				if not ok then
+					return false, decoded
+				end
+				result[fieldName] = decoded
+			end
+			return true, result :: any
+		end,
+	}
+end
+
+function Schema.taggedUnion<T>(tagField: string, variants: { [string]: Schema<any> }): Schema<T>
+	return {
+		kind = "taggedUnion",
+		_inner = { tagField = tagField, variants = variants },
+		validate = function(value: any, path: string): (boolean, string?)
+			if type(value) ~= "table" then
+				return false, path .. ": expected object, got " .. typeof(value)
+			end
+			local tagValue = (value :: any)[tagField]
+			if type(tagValue) ~= "string" then
+				return false, path .. "/" .. tagField .. ": expected string, got " .. typeof(tagValue)
+			end
+			local schema = variants[tagValue]
+			if not schema then
+				return false, path .. ": unknown tag " .. tostring(tagValue)
+			end
+			return schema.validate(value, path)
+		end,
+		encode = function(value: T): any
+			if type(value) ~= "table" then
+				error("taggedUnion encode: expected table")
+			end
+			local tagValue = (value :: any)[tagField]
+			local schema = variants[tagValue]
+			if not schema then
+				error("taggedUnion encode: unknown tag " .. tostring(tagValue))
+			end
+			return schema.encode(value)
+		end,
+		decode = function(value: any, path: string): (boolean, T | string)
+			if type(value) ~= "table" then
+				return false, path .. ": expected object, got " .. typeof(value)
+			end
+			local tagValue = (value :: any)[tagField]
+			if type(tagValue) ~= "string" then
+				return false, path .. "/" .. tagField .. ": expected string, got " .. typeof(tagValue)
+			end
+			local schema = variants[tagValue]
+			if not schema then
+				return false, path .. ": unknown tag " .. tostring(tagValue)
+			end
+			return schema.decode(value, path)
+		end,
+	}
+end
+
 return Schema

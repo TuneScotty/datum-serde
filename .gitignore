@@ -9,10 +9,9 @@
 
 # Wally
 Packages/
+ServerPackages/
 wally.lock
-
-# DevPackages (local development)
-DevPackages/
+wally.toml
 
 # Test outputs
 test_results/

@@ -7,16 +7,16 @@ Time complexity: O(sum of all tests)
 ]]
 
 -- Import test modules from ServerScriptService
-local testFolder = script.Parent:FindFirstChild("DatumSerdeTestRunner")
+local testFolder = script.Parent:WaitForChild("RuntimeTests")
 if not testFolder then
-	error("DatumSerdeTestRunner folder not found in ServerScriptService. Make sure Rojo is synced.")
+	error("RuntimeTests folder not found in ServerScriptService. Make sure Rojo is synced.")
 end
 
-local codecTests = require(testFolder:WaitForChild("codec_spec"))
-local integrationTests = require(testFolder:WaitForChild("integration_spec"))
-local migrateTests = require(testFolder:WaitForChild("migrate_spec"))
-local profileStoreIntegrationTests = require(testFolder:WaitForChild("profilestore_integration_spec"))
-local schemaTests = require(testFolder:WaitForChild("schema_spec"))
+local codecTests = require(testFolder.codec_spec)
+local integrationTests = require(testFolder.integration_spec)
+local migrateTests = require(testFolder.migrate_spec)
+local profileStoreIntegrationTests = require(testFolder.profilestore_integration_spec)
+local schemaTests = require(testFolder.schema_spec)
 
 print("\n" .. string.rep("=", 60))
 print("DATUM-SERDE TEST SUITE")

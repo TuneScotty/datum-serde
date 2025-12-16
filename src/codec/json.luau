@@ -30,65 +30,58 @@ Purpose: Checks for cycles and metatables in a table structure.
 Arguments: tbl - table to check, visited - set of visited tables, depth - current depth, maxDepth - maximum depth allowed
 Time complexity: O(n) where n = number of nodes in tree
 ]]
-local function checkSafety(tbl: any, visited: { [any]: boolean }, depth: number, maxDepth: number): (boolean, string?)
+local function validateTree(
+	value: any,
+	visited: { [any]: boolean },
+	depth: number,
+	maxDepth: number,
+	maxArrayLength: number
+): (boolean, string?)
 	if depth > maxDepth then
 		return false, "E:Safety: max depth exceeded"
 	end
 
-	if type(tbl) ~= "table" then
-		return true
-	end
-
-	if getmetatable(tbl) ~= nil then
-		return false, "E:Safety: metatables not allowed"
-	end
-
-	if visited[tbl] then
-		return false, "E:Safety: cyclic reference detected"
-	end
-
-	visited[tbl] = true
-
-	for k, v in pairs(tbl) do
-		local okK, errK = checkSafety(k, visited, depth + 1, maxDepth)
-		if not okK then
-			return false, errK
-		end
-
-		local okV, errV = checkSafety(v, visited, depth + 1, maxDepth)
-		if not okV then
-			return false, errV
-		end
-	end
-
-	return true
-end
-
---[[
-Purpose: Validates that a value is JSON-safe (no NaN, Inf).
-Arguments: value - value to validate
-Time complexity: O(n) where n = structure size
-]]
-local function validateValue(value: any): (boolean, string?)
-	if type(value) == "number" then
+	local valueType = type(value)
+	if valueType == "number" then
 		if value ~= value then
 			return false, "E:Codec: NaN not allowed"
 		end
 		if value == math.huge or value == -math.huge then
 			return false, "E:Codec: Infinity not allowed"
 		end
-	elseif type(value) == "table" then
-		for k, v in pairs(value) do
-			local okK, errK = validateValue(k)
-			if not okK then
-				return false, errK
-			end
-			local okV, errV = validateValue(v)
-			if not okV then
-				return false, errV
-			end
+		return true
+	end
+
+	if valueType ~= "table" then
+		return true
+	end
+
+	if getmetatable(value) ~= nil then
+		return false, "E:Safety: metatables not allowed"
+	end
+
+	if visited[value] then
+		return false, "E:Safety: cyclic reference detected"
+	end
+
+	if #value > maxArrayLength then
+		return false, "E:Codec: array length exceeds max"
+	end
+
+	visited[value] = true
+
+	for k, v in pairs(value) do
+		local okK, errK = validateTree(k, visited, depth + 1, maxDepth, maxArrayLength)
+		if not okK then
+			return false, errK
+		end
+
+		local okV, errV = validateTree(v, visited, depth + 1, maxDepth, maxArrayLength)
+		if not okV then
+			return false, errV
 		end
 	end
+
 	return true
 end
 
@@ -103,41 +96,10 @@ function JSON.encode(value: any, opts: EncodeOptions?): (boolean, string | strin
 	local maxArrayLength = options.maxArrayLength or DEFAULT_MAX_ARRAY_LENGTH
 	local maxBytes = options.maxBytes or DEFAULT_MAX_BYTES
 
-	-- Safety checks
 	local visited = {}
-	local okSafety, errSafety = checkSafety(value, visited, 0, maxDepth)
-	if not okSafety then
-		return false, errSafety :: string
-	end
-
-	-- Validate no NaN/Inf
-	local okValid, errValid = validateValue(value)
-	if not okValid then
-		return false, errValid :: string
-	end
-
-	-- Check array length limits
-	if type(value) == "table" then
-		local function checkArrayLimits(tbl: any): (boolean, string?)
-			if type(tbl) ~= "table" then
-				return true
-			end
-			if #tbl > maxArrayLength then
-				return false, "E:Codec: array length exceeds max"
-			end
-			for _, v in pairs(tbl) do
-				local ok, err = checkArrayLimits(v)
-				if not ok then
-					return false, err
-				end
-			end
-			return true
-		end
-
-		local okLen, errLen = checkArrayLimits(value)
-		if not okLen then
-			return false, errLen :: string
-		end
+	local okValidate, errValidate = validateTree(value, visited, 0, maxDepth, maxArrayLength)
+	if not okValidate then
+		return false, errValidate :: string
 	end
 
 	-- Encode

@@ -1,5 +1,7 @@
 # datum-serde Design Document
 
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 MD040 -->
+
 ## Architecture Overview
 
 datum-serde is a layered system for type-safe data serialization, validation, and migration in Roblox.
@@ -84,7 +86,9 @@ type Schema<T> = {
 - **Primitives**: `nil()`, `boolean()`, `number()`, `string()`
 - **Literal**: `literal(value)` - exact value match
 - **Collections**: `array(elem)`, `map(key, val)`, `object(shape)`
+- **Strict Collections**: `strictArray(elem)`, `strictObject(shape)`
 - **Combinators**: `union(...schemas)`, `optional(schema)`
+- **Discriminated Union**: `taggedUnion(tagField, variants)`
 - **Refinement**: `refine(schema, predicate, msg)` - custom validation
 
 ### Validation Strategy
@@ -109,6 +113,9 @@ Uses `HttpService:JSONEncode/Decode` with safety layers:
    - Max depth (default 100)
    - Max array length (default 100k)
    - Max output bytes (default 10MB)
+
+**Pre-Encode Validation**
+- Single traversal over the value tree to enforce safety and limits (avoids redundant passes)
 
 **Determinism**
 - Relies on HttpService deterministic encoding
@@ -142,6 +149,7 @@ Each edge is a pure function: `(OldValue) -> (boolean, NewValue|err)`
 - BFS (breadth-first search) finds shortest path
 - Time complexity: O(V + E)
 - Returns early on first path found
+- Uses a predecessor map to reconstruct the chosen path (avoids per-step path cloning)
 
 ### Cycle Detection
 
